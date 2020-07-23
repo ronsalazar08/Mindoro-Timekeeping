@@ -1,1 +1,0 @@
-*Mindoro-Timekeeping
