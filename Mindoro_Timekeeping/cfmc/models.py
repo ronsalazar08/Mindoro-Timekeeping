@@ -5,11 +5,14 @@ from django.utils.html import mark_safe
 
 class employee(models.Model):
     status_choice = [ 
-        ('P', 'Present'),
-        ('L', 'Late'),
-        ('A', 'Absent')
+        ('P', 'PRESENT'),
+        ('A', 'ABSENT')
     ]
     t1 = models.IntegerField(unique=True)
+    t2 = models.IntegerField(unique=True)
+    t3 = models.IntegerField(unique=True)
+    t4 = models.IntegerField(unique=True)
+    t5 = models.IntegerField(unique=True)
     user_id = models.CharField(max_length=50)
     firstname = models.CharField(max_length=50)
     middlename = models.CharField(max_length=50)
@@ -52,3 +55,16 @@ class employee(models.Model):
     def thumbnail(self, *args, **kwargs):
         return mark_safe(f'<img src="{self.picture.url}" width="100" height="100" />')
         image_tag.short_description = 'Image'
+
+
+class logbox(models.Model):
+    transact_choice = [('I', 'IN'),('O', 'OUT')]
+    employee = models.ForeignKey(employee, to_field="t1", db_column="t1", on_delete=models.CASCADE)
+    date_time = models.DateTimeField(null=True, blank=True)
+    transaction = models.CharField(max_length=1, choices=transact_choice)
+    
+    class Meta:
+        verbose_name_plural = "Logbox"
+    def __str__(self):
+        employee = str(self.employee)        
+        return str(employee)

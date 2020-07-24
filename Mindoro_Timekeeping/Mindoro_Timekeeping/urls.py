@@ -7,12 +7,14 @@ from django.conf.urls.static import static
 # from . import views
 
 # admin.site.site_header = "ADMINISTRATOR PAGE"
-admin.site.site_title = ""
+admin.site.site_title = " "
 admin.site.index_title = "TIMEKEEPING"
 
 
 urlpatterns = [
+    # path('', admin.site.urls),
     path('admin/', admin.site.urls),
+    path('cfmc/', include('cfmc.urls')),
 ]
 
 if settings.DEBUG:
