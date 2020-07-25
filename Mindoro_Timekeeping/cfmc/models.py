@@ -56,6 +56,10 @@ class employee(models.Model):
         return mark_safe(f'<img src="{self.picture.url}" width="100" height="100" />')
         image_tag.short_description = 'Image'
 
+    def action(self,  *args, **kwargs):
+        return mark_safe(f'''<input type="button" onclick="location.href='/cfmc/record/{self.id}'" style="height:25px; padding: 5px 15px; font-weight: bolder;" value="Record" />''')
+        
+
 
 class logbox(models.Model):
     transact_choice = [('I', 'IN'),('O', 'OUT')]

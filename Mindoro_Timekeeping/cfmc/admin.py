@@ -7,10 +7,11 @@ from django.urls import path
 admin.site.unregister(User)
 admin.site.unregister(Group)
 
+
 @admin.register(employee)
 class emp(admin.ModelAdmin):
     fields = [
-        # 'thumbnail',
+        'thumbnail',
         'picture',
         't1',
         't2',
@@ -32,6 +33,7 @@ class emp(admin.ModelAdmin):
         't4',
         't5',
         'status',
+        'action'
     ]
     list_filter = ['status']
     search_fields = ['firstname', 'lastname']
