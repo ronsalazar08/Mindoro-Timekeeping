@@ -15,6 +15,7 @@ urlpatterns = [
     # path('', admin.site.urls),
     path('admin/', admin.site.urls),
     path('cfmc/', include('cfmc.urls')),
+    path('schedule/', include('schedule.urls')),
 ]
 
 if settings.DEBUG:

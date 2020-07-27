@@ -1,0 +1,509 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+{% load i18n admin_urls static admin_modify %}
+
+{% block extrahead %}{{ block.super }}
+<script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
+
+    <style>
+        @media print{
+            .dontPrint{
+                display: none;
+            }
+            body{
+                transform.scale(.9);
+            }
+        }
+        .thead th{
+            text-align: center; 
+            border: solid 1px #E5E8E8; 
+        }
+        .tbody td{
+            padding: 5px; 
+            font-size: 12px;
+            font-weight: bold;
+            text-align: center;
+            border: solid 1px #E5E8E8;
+        }
+        sched th, sched td{
+            border: solid 1px;
+        }
+    </style>
+{{ media }}
+{% endblock %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}">{% endblock %}
+
+{% block coltype %}colM{% endblock %}
+
+{% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} change-form{% endblock %}
+
+{% if not is_popup %}
+{% block breadcrumbs %}
+<div class="breadcrumbs dontPrint">
+    <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+</div>
+{% endblock %}
+{% endif %}
+
+{% block content %}
+    <div class="submit-row dontPrint">
+        <input type="button" onclick="javascript:xport.toCSV('sched');" value="Export" style=" background-color: mediumseagreen;" onMouseOver="this.style.background='forestgreen'" onMouseOut="this.style.background='mediumseagreen'" />
+    </div>
+    <table id="sched" style="display: none;" class="w-100">  
+        <thead>
+            <tr>
+                <th colspan=5>CONSOLIDATED FARM MANAGEMENT CORPORATION</th>
+            </tr>
+            <tr>
+            </tr>
+            <tr>
+                <th>userID</th>
+                <th>DateLog</th>
+                <th>TimeLog</th>
+                <th>event</th>
+                <th>terminalSN2</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for q1 in query1 %}
+            <tr>
+                <td class=" p-1">{{q1.userID|default_if_none:""}}</td>
+                <td class=" p-1">{{q1.DateLog|default_if_none:""}}</td>
+                <td class=" p-1"> {{q1.TimeLog|default_if_none:""}}</td>
+                <td class=" p-1">{{q1.event|default_if_none:""}}</td>
+                <td class=" p-1">	</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div style="display: flex; justify-content: center;">
+        <table style="width: 100%;" >
+            <thead class="thead">
+                <tr>
+                <th>
+                        <div class="text"></div>
+                        <div class="clear"></div>
+                    </th>
+                    <th>
+                        <div class="text">{{ts.0|date:"Y"}}</div>
+                        <div class="clear"></div>
+                    </th>
+                    <th colspan=2>
+                        <div class="text">{{ts.0|date:"M. d"}}</div>
+                        <div class="clear"></div>
+                    </th>
+                    <th colspan=2>
+                        <div class="text">{{ts.1|date:"M. d"}}</div>
+                        <div class="clear"></div>
+                    </th>
+                    <th colspan=2>
+                        <div class="text">{{ts.2|date:"M. d"}}</div>
+                        <div class="clear"></div>
+                    </th>
+                    <th colspan=2>
+                        <div class="text">{{ts.3|date:"M. d"}}</div>
+                        <div class="clear"></div>
+                    </th>
+                    <th colspan=2>
+                        <div class="text">{{ts.4|date:"M. d"}}</div>
+                        <div class="clear"></div>
+                    </th>
+                    <th colspan=2>
+                        <div class="text">{{ts.5|date:"M. d"}}</div>
+                        <div class="clear"></div>
+                    </th>
+                    <th colspan=2>
+                        <div class="text">{{ts.6|date:"M. d"}}</div>
+                        <div class="clear"></div>
+                    </th>
+                </tr>
+
+                <tr>
+                    <th>
+                        <div class="text"></div>
+                        <div class="clear"></div>
+                    </th>
+                    <th>
+                        <div class="text">.</div>
+                        <div class="clear"></div>
+                    </th>
+                    <th colspan=2>
+                        <div class="text">SUNDAY</div>
+                        <div class="clear"></div>
+                    </th>
+                    <th colspan=2>
+                        <div class="text">MONDAY</div>
+                        <div class="clear"></div>
+                    </th>
+                    <th colspan=2>
+                        <div class="text">TUESDAY</div>
+                        <div class="clear"></div>
+                    </th>
+                    <th colspan=2>
+                        <div class="text">WEDNESDAY</div>
+                        <div class="clear"></div>
+                    </th>
+                    <th colspan=2>
+                        <div class="text">THURSDAY</div>
+                        <div class="clear"></div>
+                    </th>
+                    <th colspan=2>
+                        <div class="text">FRIDAY</div>
+                        <div class="clear"></div>
+                    </th>
+                    <th colspan=2>
+                        <div class="text">SATURDAY</div>
+                        <div class="clear"></div>
+                    </th>
+                </tr>
+
+                <tr>
+                    <th>
+                        <div class="text"></div>
+                        <div class="clear"></div>
+                    </th>
+                    <th>
+                        <div class="text">NAME</div>
+                        <div class="clear"></div>
+                    </th>
+                    <th>
+                        <div class="text">IN</div>
+                        <div class="clear"></div>
+                    </th>
+                    <th>
+                        <div class="text">OUT</div>
+                        <div class="clear"></div>
+                    </th>
+                    <th>
+                        <div class="text">IN</div>
+                        <div class="clear"></div>
+                    </th>
+                    <th>
+                        <div class="text">OUT</div>
+                        <div class="clear"></div>
+                    </th>
+                    <th>
+                        <div class="text">IN</div>
+                        <div class="clear"></div>
+                    </th>
+                    <th>
+                        <div class="text">OUT</div>
+                        <div class="clear"></div>
+                    </th>
+                    <th>
+                        <div class="text">IN</div>
+                        <div class="clear"></div>
+                    </th>
+                    <th>
+                        <div class="text">OUT</div>
+                        <div class="clear"></div>
+                    </th>
+                    <th>
+                        <div class="text">IN</div>
+                        <div class="clear"></div>
+                    </th>
+                    <th>
+                        <div class="text">OUT</div>
+                        <div class="clear"></div>
+                    </th>
+                    <th>
+                        <div class="text">IN</div>
+                        <div class="clear"></div>
+                    </th>
+                    <th>
+                        <div class="text">OUT</div>
+                        <div class="clear"></div>
+                    </th>
+                    <th>
+                        <div class="text">IN</div>
+                        <div class="clear"></div>
+                    </th>
+                    <th>
+                        <div class="text">OUT</div>
+                        <div class="clear"></div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="tbody">
+                {% for q in query %}
+                <tr>
+                    <td >{{ forloop.counter }}</td>
+                    <td style="text-align: left;">{{q.name}}</td>
+                    <td >{{q.ti1|default_if_none:""}}</td>
+                    <td >{{q.to1|default_if_none:""}}</td>
+                    <td >{{q.ti2|default_if_none:""}}</td>
+                    <td >{{q.to2|default_if_none:""}}</td>
+                    <td >{{q.ti3|default_if_none:""}}</td>
+                    <td >{{q.to3|default_if_none:""}}</td>
+                    <td >{{q.ti4|default_if_none:""}}</td>
+                    <td >{{q.to4|default_if_none:""}}</td>
+                    <td >{{q.ti5|default_if_none:""}}</td>
+                    <td >{{q.to5|default_if_none:""}}</td>
+                    <td >{{q.ti6|default_if_none:""}}</td>
+                    <td >{{q.to6|default_if_none:""}}</td>
+                    <td >{{q.ti7|default_if_none:""}}</td>
+                    <td >{{q.to7|default_if_none:""}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script type="text/javascript">
+        function fnExcelReport() {
+            var table = document.getElementById('sched'); // id of table
+            var tableHTML = table.outerHTML;
+            var fileName = 'olo.xls';
+
+            var msie = window.navigator.userAgent.indexOf("MSIE ");
+
+            // If Internet Explorer
+            if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./)) {
+              dummyFrame.document.open('txt/html', 'replace');
+              dummyFrame.document.write(tableHTML);
+              dummyFrame.document.close();
+              dummyFrame.focus();
+              return dummyFrame.document.execCommand('SaveAs', true, fileName);
+            }
+            //other browsers
+            else {
+              var a = document.createElement('a');
+              tableHTML = tableHTML.replace(/  /g, '').replace(/ /g, '%20'); // replaces spaces
+              a.href = 'data:application/vnd.ms-excel,' + tableHTML;
+              a.setAttribute('download', fileName);
+              document.body.appendChild(a);
+              a.click();
+              document.body.removeChild(a);
+            }
+          }
+           var tablesToExcel = (function () {
+              var uri = 'data:application/vnd.ms-excel;base64,'
+              , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets>'
+              , templateend = '</x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head>'
+              , body = '<body>'
+              , tablevar = '<table>{table'
+              , tablevarend = '}</table>'
+              , bodyend = '</body></html>'
+              , worksheet = '<x:ExcelWorksheet><x:Name>'
+              , worksheetend = '</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet>'
+              , worksheetvar = '{worksheet'
+              , worksheetvarend = '}'
+              , base64 = function (s) { return window.btoa(unescape(encodeURIComponent(s))) }
+              , format = function (s, c) { return s.replace(/{(\w+)}/g, function (m, p) { return c[p]; }) }
+              , wstemplate = ''
+              , tabletemplate = '';
+
+              return function (table, name, filename) {
+                  var tables = table;
+
+                  for (var i = 0; i < tables.length; ++i) {
+                      wstemplate += worksheet + worksheetvar + i + worksheetvarend + worksheetend;
+                      tabletemplate += tablevar + i + tablevarend;
+                  }
+
+                  var allTemplate = template + wstemplate + templateend;
+                  var allWorksheet = body + tabletemplate + bodyend;
+                  var allOfIt = allTemplate + allWorksheet;
+
+                  var ctx = {};
+                  for (var j = 0; j < tables.length; ++j) {
+                      ctx['worksheet' + j] = name[j];
+                  }
+
+                  for (var k = 0; k < tables.length; ++k) {
+                      var exceltable;
+                      if (!tables[k].nodeType) exceltable = document.getElementById(tables[k]);
+                      ctx['table' + k] = exceltable.innerHTML;
+                  }
+
+
+                  window.location.href = uri + base64(format(allOfIt, ctx));
+
+              }
+          })();
+          var xport = {
+                _fallbacktoCSV: true,  
+                toXLS: function(tableId, filename) {   
+                    this._filename = (typeof filename == 'undefined') ? tableId : filename;
+                    
+                    //var ieVersion = this._getMsieVersion();
+                    //Fallback to CSV for IE & Edge
+                    if ((this._getMsieVersion() || this._isFirefox()) && this._fallbacktoCSV) {
+                    return this.toCSV(tableId);
+                    } else if (this._getMsieVersion() || this._isFirefox()) {
+                    alert("Not supported browser");
+                    }
+
+                    //Other Browser can download xls
+                    var htmltable = document.getElementById(tableId);
+                    var html = htmltable.outerHTML;
+
+                    this._downloadAnchor("data:application/vnd.ms-excel" + encodeURIComponent(html), 'xls'); 
+                },
+                toCSV: function(tableId, filename) {
+                    this._filename = (typeof filename === 'undefined') ? tableId : filename;
+                    // Generate our CSV string from out HTML Table
+                    var csv = this._tableToCSV(document.getElementById(tableId));
+                    // Create a CSV Blob
+                    var blob = new Blob([csv], { type: "text/csv" });
+
+                    // Determine which approach to take for the download
+                    if (navigator.msSaveOrOpenBlob) {
+                    // Works for Internet Explorer and Microsoft Edge
+                    navigator.msSaveOrOpenBlob(blob, '{{ts.0|date:"M d, Y"}} TO {{ts.6|date:"M d, Y"}}' + ".csv");
+                    } else {      
+                    this._downloadAnchor(URL.createObjectURL(blob), 'csv');      
+                    }
+                },
+                _getMsieVersion: function() {
+                    var ua = window.navigator.userAgent;
+
+                    var msie = ua.indexOf("MSIE ");
+                    if (msie > 0) {
+                    // IE 10 or older => return version number
+                    return parseInt(ua.substring(msie + 5, ua.indexOf(".", msie)), 10);
+                    }
+
+                    var trident = ua.indexOf("Trident/");
+                    if (trident > 0) {
+                    // IE 11 => return version number
+                    var rv = ua.indexOf("rv:");
+                    return parseInt(ua.substring(rv + 3, ua.indexOf(".", rv)), 10);
+                    }
+
+                    var edge = ua.indexOf("Edge/");
+                    if (edge > 0) {
+                    // Edge (IE 12+) => return version number
+                    return parseInt(ua.substring(edge + 5, ua.indexOf(".", edge)), 10);
+                    }
+
+                    // other browser
+                    return false;
+                },
+                _isFirefox: function(){
+                    if (navigator.userAgent.indexOf("Firefox") > 0) {
+                    return 1;
+                    }
+                    
+                    return 0;
+                },
+                _downloadAnchor: function(content, ext) {
+                    var anchor = document.createElement("a");
+                    anchor.style = "display:none !important";
+                    anchor.id = "downloadanchor";
+                    document.body.appendChild(anchor);
+
+                    // If the [download] attribute is supported, try to use it
+                    
+                    if ("download" in anchor) {
+                        anchor.download = '{{ts.0|date:"M d, Y"}} TO {{ts.6|date:"M d, Y"}}' + "." + ext;
+                    }
+                    anchor.href = content;
+                    anchor.click();
+                    anchor.remove();
+                },
+                _tableToCSV: function(table) {
+                    // We'll be co-opting `slice` to create arrays
+                    var slice = Array.prototype.slice;
+
+                    return slice
+                    .call(table.rows)
+                    .map(function(row) {
+                        return slice
+                        .call(row.cells)
+                        .map(function(cell) {
+                            return '"t"'.replace("t", cell.textContent);
+                        })
+                        .join(",");
+                    })
+                    .join("\r\n");
+                }
+                };
+    </script>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+{% comment %} <html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+     <style type="text/css">
+        body
+        {
+            font-family: Arial;
+            font-size: 10pt;
+        }
+        table
+        {
+            border: 1px solid #ccc;
+            border-collapse: collapse;
+        }
+        table th
+        {
+            background-color: #F7F7F7;
+            color: #333;
+            font-weight: bold;
+        }
+        table th, table td
+        {
+            padding: 5px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+     <table id="tblCustomers" cellspacing="0" cellpadding="0">
+        <tr>
+            <th>Customer Id</th>
+            <th>Name</th>
+            <th>Country</th>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>John Hammond</td>
+            <td>United States</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>Mudassar Khan</td>
+            <td>India</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>Suzanne Mathews</td>
+            <td>France</td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td>Robert Schidner</td>
+            <td>Russia</td>
+        </tr>
+    </table>
+    <br />
+    <input type="button" id="btnExport" value="Export" onclick="Export()" />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.22/pdfmake.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+    <script type="text/javascript">
+        function Export() {
+            html2canvas(document.getElementById('tblCustomers'), {
+                onrendered: function (canvas) {
+                    var data = canvas.toDataURL();
+                    var docDefinition = {
+                        content: [{
+                            image: data,
+                            width: 500
+                        }]
+                    };
+                    pdfMake.createPdf(docDefinition).download("Table.pdf");
+                }
+            });
+        }
+    </script>
+</body>
+</html> {% endcomment %}
