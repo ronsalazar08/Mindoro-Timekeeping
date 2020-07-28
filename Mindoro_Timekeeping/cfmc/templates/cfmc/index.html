@@ -1,0 +1,84 @@
+{% load static %}
+{% load crispy_forms_tags %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="{% static 'cfmc/style.css' %}">
+        <title> &#65279; </title>
+    </head>
+    <body class="bg" onload="startTime()" oncontextmenu="return false">
+        
+            <div id="block_containerLogo" class="ml-1 mr-1 mt-2 border border-dark border-right-0 border-left-0" > 
+                <div class="">
+                    <b><font size="4" class="">Consolidated Farm Management <br> Corporation</font></b>
+                </div>
+            </div>
+		<br><br>
+		<div id="dateBox"></div>
+		<div id="timeBox"></div>
+		<form method="POST" autocomplete="off">
+			{% csrf_token %}
+			<input type="text" id="inputBox" name="inputBox" autofocus required />
+			<input type="submit" id="inputBtn" Value="ENTER"/>
+		</form>
+    <script>
+		function startTime() {
+			//time
+			var today = new Date();
+			var h = today.getHours();
+			var m = today.getMinutes();
+			var s = today.getSeconds();
+			var ampm = h >= 12 ? "PM" : "AM";
+			h = h % 12;
+			h = h ? h : 12; // the hour '0' should be '12'
+			h = checkTime(h);
+			m = checkTime(m);
+			s = checkTime(s);
+			document.getElementById("timeBox").innerHTML =
+			h + ":" + m + ":" + s + " " + ampm;
+			var t = setTimeout(startTime, 500);
+
+			//date
+			var months = new Array(12);
+			months[0] = "January";
+			months[1] = "February";
+			months[2] = "March";
+			months[3] = "April";
+			months[4] = "May";
+			months[5] = "June";
+			months[6] = "July";
+			months[7] = "August";
+			months[8] = "September";
+			months[9] = "October";
+			months[10] = "November";
+			months[11] = "December";
+			
+			n =  new Date();
+			y = n.getFullYear();
+			m = n.getMonth();
+			
+			d = n.getDate();
+			document.getElementById("dateBox").innerHTML = months[m] + " " + d + ", " + y;
+		}
+
+		function checkTime(i) {
+			if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+			return i;
+		}
+	
+        {% comment %} $(document).ready(function() {
+			startTime();
+            $('input').on('input', function() {
+              $(this).val($(this).val().replace(/[^a-z0-9]/gi, ''));
+            });
+            $('html, body, div, input').css('cursor', 'none');
+            $('html, body, div, input').on('click', function(){
+				$('#inputBox').focus();
+			});
+        }); {% endcomment %}
+    </script>
+       
+    </body>
+</html>

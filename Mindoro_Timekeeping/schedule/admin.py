@@ -20,13 +20,13 @@ lastweekl = ts + timezone.timedelta(days=-2)
 
 
 current_week = currentweekf.strftime(
-    "%B %d, %Y") + ' - ' + currentweekl.strftime("%B %d %Y")
-last_week = lastweekf.strftime("%B %d, %Y") + \
-    ' - ' + lastweekl.strftime("%B %d %Y")
+    "%b %d, %Y") + ' - ' + currentweekl.strftime("%b %d, %Y")
+last_week = lastweekf.strftime(
+    "%b %d, %Y") + ' - ' + lastweekl.strftime("%b %d, %Y")
 last2_week = last2weekf.strftime(
-    "%B %d, %Y") + ' - ' + last2weekl.strftime("%B %d %Y")
+    "%b %d, %Y") + ' - ' + last2weekl.strftime("%b %d, %Y")
 last3_week = last3weekf.strftime(
-    "%B %d, %Y") + ' - ' + last3weekl.strftime("%B %d %Y")
+    "%b %d, %Y") + ' - ' + last3weekl.strftime("%b %d, %Y")
 # my dummy model # ====================================================
 
 

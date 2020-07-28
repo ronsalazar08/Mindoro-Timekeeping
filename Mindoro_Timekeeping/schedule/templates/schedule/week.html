@@ -42,14 +42,15 @@
 {% block breadcrumbs %}
 <div class="breadcrumbs dontPrint">
     <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+    <a href="#" onclick="javascript:xport.toCSV('sched');" style="float: right;">Export</a>
 </div>
 {% endblock %}
 {% endif %}
 
 {% block content %}
-    <div class="submit-row dontPrint">
+    {% comment %} <div class="submit-row dontPrint">
         <input type="button" onclick="javascript:xport.toCSV('sched');" value="Export" style=" background-color: mediumseagreen;" onMouseOver="this.style.background='forestgreen'" onMouseOut="this.style.background='mediumseagreen'" />
-    </div>
+    </div> {% endcomment %}
     <table id="sched" style="display: none;" class="w-100">  
         <thead>
             <tr>

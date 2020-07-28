@@ -3,4 +3,5 @@ from . import views
 
 urlpatterns = [
     path('record/<int:tid>', views.record_per_employee, name='record'),
+    path('index/', views.index, name='index'),
 ]

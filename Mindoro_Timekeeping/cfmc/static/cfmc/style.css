@@ -1,0 +1,38 @@
+
+/* background */
+.bg {
+    background-image: url("farm.jpg");
+	background-color: rgba(255,255,255,0.9);
+    background-blend-mode: lighten;
+    /* Full height */
+    height: 100%; 
+
+    /* Center and scale the image nicely */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-attachment: fixed;
+}
+
+
+#dateBox{
+    font-family: "Piboto";
+    font-weight: bold;
+    text-align: center;
+    font-size:	54px;
+    cursor: default;
+}
+
+
+#timeBox {
+    font-family: "Piboto";
+    font-weight: bold;
+    text-align: center;
+    font-size:	110px;
+    margin-left:auto;
+    margin-right:auto;
+    width: 80%;
+    border: solid 3px;
+    color: blue;
+    border-radius: 5px;
+}

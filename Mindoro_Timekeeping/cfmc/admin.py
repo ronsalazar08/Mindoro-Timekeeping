@@ -4,7 +4,7 @@ from .models import *
 from django.http import HttpResponse
 from django.urls import path
 
-# admin.site.unregister(User)
+admin.site.unregister(User)
 admin.site.unregister(Group)
 
 
