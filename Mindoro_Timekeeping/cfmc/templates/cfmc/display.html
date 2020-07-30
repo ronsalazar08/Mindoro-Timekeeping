@@ -1,0 +1,73 @@
+{% load static %}
+{% load crispy_forms_tags %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="{% static 'cfmc/style.css' %}">
+        <title> &#65279; </title>
+    </head>
+    <body class="bg" onload="startTime()" oncontextmenu="return false">
+		<div id="titlebox">
+			Consolidated Farm Management <br> Corporation
+		</div>
+
+    <br>
+	{% if transaction == 'ERROR' %}
+		<center>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+		<div style="width: 80%; border: solid 3px blue; border-radius: 10px">
+			<div style="text-align: center; font-size: 110px; font-weight: bolder; font-family: 'Piboto'; color: {{color}}">
+				ERROR!
+			</div>
+		</div>
+        <br>
+        <br>
+		<div id="time" style="color: blue; font-size: 30px; font-weight: bolder; font-family: 'Piboto';">{{orasan}}</div>
+        </center>
+	{% else %}
+		{% for name in emp %}
+			<div id="dateBox" style="color:{{ color }};">
+				{{ transaction }}
+			</div>
+			<center><img src="{{name.picture.url}}" style="border-radius: 50%;"></div>
+			<br>
+			<br>
+			<div style="width: 80%; border: solid 3px blue; border-radius: 10px">
+				<div style="text-align: center; font-size: 50px; font-weight: bolder; font-family: 'Piboto';">
+					{{name.lastname}}, {{name.firstname}} {{name.middlename|make_list|first}}.
+				</div>
+			</div>
+			<br>
+			<br>
+			<div id="time" style="color: blue; font-size: 30px; font-weight: bolder; font-family: 'Piboto';">{{orasan}}</div>
+			</center>
+		{% endfor %}
+		
+		{% if emp|length == 0 %}
+			<br><br><br>
+			<br><br><br>
+			<br><br><br>
+			<br><br><br><br>
+			<div id="timeBox"  style="color: indianred">
+				NO RECORD
+			</div>
+		{% endif %}
+		
+	
+	{% endif %}
+	<script>
+        window.onload = function() {
+            setTimeout(function(){window.location.href="{% url 'index' %}";}, 2500);
+        }
+	</script>
+</body>
+</html>

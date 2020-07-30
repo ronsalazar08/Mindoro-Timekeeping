@@ -9,18 +9,15 @@
         <title> &#65279; </title>
     </head>
     <body class="bg" onload="startTime()" oncontextmenu="return false">
-        
-            <div id="block_containerLogo" class="ml-1 mr-1 mt-2 border border-dark border-right-0 border-left-0" > 
-                <div class="">
-                    <b><font size="4" class="">Consolidated Farm Management <br> Corporation</font></b>
-                </div>
-            </div>
-		<br><br>
+		<div id="titlebox">
+			Consolidated Farm Management <br> Corporation
+		</div>
+		<br><br><br><br><br><br><br><br><br><br>
 		<div id="dateBox"></div>
 		<div id="timeBox"></div>
 		<form method="POST" autocomplete="off">
 			{% csrf_token %}
-			<input type="text" id="inputBox" name="inputBox" autofocus required />
+			<input type="text" id="inputBox" name="inputBox" onkeyup="removeSC()" autofocus required />
 			<input type="submit" id="inputBtn" Value="ENTER"/>
 		</form>
     <script>
@@ -66,6 +63,11 @@
 		function checkTime(i) {
 			if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
 			return i;
+		}
+
+		function removeSC() {
+			var x = document.getElementById("inputBox");
+			x.value = x.value.replace(/[^a-z0-9]/gi, '');
 		}
 	
         {% comment %} $(document).ready(function() {

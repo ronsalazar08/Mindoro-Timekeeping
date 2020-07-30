@@ -10,8 +10,9 @@ admin.site.unregister(Group)
 
 @admin.register(employee)
 class emp(admin.ModelAdmin):
-    fields = ['thumbnail', 'picture', 't1', 't2', 't3', 't4', 't5', 'user_id',
-              'firstname', 'middlename', 'lastname', 'birthday', 'status']
+    fields = ['thumbnail', 'picture', 'user_id',
+              'firstname', 'middlename', 'lastname', 'birthday',
+              't1', 't2', 't3', 't4', 't5', 'status']
     readonly_fields = ['thumbnail']
     list_display = ['__str__', 't1', 't2',
                     't3', 't4', 't5', 'status', 'action']
@@ -26,4 +27,4 @@ class emp(admin.ModelAdmin):
 class logboxAdmin(admin.ModelAdmin):
     list_display = ['employee', 'date_time', 'transaction']
     list_filter = ['transaction']
-    search_fields = ['date_time']
+    search_fields = ['employee__lastname', 'employee__firstname', 'date_time']

@@ -3,6 +3,26 @@
 import os
 import sys
 
+import serial
+import subprocess as sp
+from pynput.keyboard import Key, Controller
+keyboard = Controller()
+
+ser = serial.Serial('/dev/ttyUSB0',9600)
+
+def openType():
+    #os.system('python seria_test.py')
+    ser.write(str.encode('2'))
+    proc = sp.Popen(['python3','/home/pi/Desktop/TYPE/seria_test.py'])
+    global pid1
+    pid1 = proc.pid
+    return pid1
+
+pid1 = openType()
+f = open("pid.txt", "w")
+f.write(str(pid1))
+f.close()
+
 
 def main():
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Mindoro_Timekeeping.settings')

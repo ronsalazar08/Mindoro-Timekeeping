@@ -75,6 +75,82 @@
                 data-model-name="{{ opts.model_name }}"
             {% endif %}>
     </script>
+
+    <style>
+        .butClass{
+          display: inline-block;
+          color: white;
+          background-color: #79aec8;
+          border-radius: 5px;
+          border-style: none;
+          padding: 5px 15px; 
+          margin-left: 10px;
+          cursor: pointer;
+        }
+        .butClass:hover{
+          background-color: #609AB6;
+        }
+    </style>
+    <script type="text/javascript">
+      window.onload = function() {
+        //===============================
+        var myDiv = document.getElementById("id_t1").parentNode;
+        var button = document.createElement('div');  
+        button.setAttribute('id', 'set_T1');
+        button.setAttribute('class', 'butClass');
+        button.onclick = function () {
+            window.location.href="/cfmc/setT1/{{original.t1}}"
+        };
+        var text = document.createTextNode("SET"); 
+        button.appendChild(text); 
+        myDiv.appendChild(button);
+        //===============================
+        var myDiv2 = document.getElementById("id_t2").parentNode;
+        var button2 = document.createElement('div');  
+        button2.setAttribute('id', 'set_T2');
+        button2.setAttribute('class', 'butClass');
+        button2.onclick = function () {
+            window.location.href="/cfmc/setT1/{{original.t2}}"
+        };
+        var text2 = document.createTextNode("SET"); 
+        button2.appendChild(text2); 
+        myDiv2.appendChild(button2);
+        //===============================
+        var myDiv3 = document.getElementById("id_t3").parentNode;
+        var button3 = document.createElement('div');  
+        button3.setAttribute('id', 'set_T3');
+        button3.setAttribute('class', 'butClass');
+        button3.onclick = function () {
+            window.location.href="/cfmc/setT1/{{original.t3}}"
+        };
+        var text3 = document.createTextNode("SET"); 
+        button3.appendChild(text3); 
+        myDiv3.appendChild(button3);
+        //===============================
+        var myDiv4 = document.getElementById("id_t4").parentNode;
+        var button4 = document.createElement('div');  
+        button4.setAttribute('id', 'set_T4');
+        button4.setAttribute('class', 'butClass');
+        button4.onclick = function () {
+            window.location.href="/cfmc/setT1/{{original.t4}}"
+        };
+        var text4 = document.createTextNode("SET"); 
+        button4.appendChild(text4); 
+        myDiv4.appendChild(button4);
+        //===============================
+        var myDiv5 = document.getElementById("id_t5").parentNode;
+        var button5 = document.createElement('div');  
+        button5.setAttribute('id', 'set_T5');
+        button5.setAttribute('class', 'butClass');
+        button5.onclick = function () {
+            window.location.href="/cfmc/setT1/{{original.t5}}"
+        };
+        var text5 = document.createTextNode("SET"); 
+        button5.appendChild(text5); 
+        myDiv5.appendChild(button5);
+        //===============================
+      }
+    </script>
 {% endblock %}
 
 {# JavaScript for prepopulated fields #}
