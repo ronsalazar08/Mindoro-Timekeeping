@@ -74,8 +74,8 @@ class employee(models.Model):
             this = employee.objects.get(id=self.id)
             if this.picture != self.picture & this.picture.url != '/media/no-avatar.png':
                 this.picture.delete(save=False)
-            if this.name_sound != self.name_sound:
-                this.name_sound.delete(save=False)
+            # if this.name_sound != self.name_sound:
+            #     this.name_sound.delete(save=False)
         except:
             pass  # when new photo then we do nothing, normal case
         super(employee, self).save(*args, **kwargs)
