@@ -1,0 +1,290 @@
+import RPi.GPIO as GPIO
+import face_recognition
+import picamera
+import numpy as np
+import os
+import time
+import lcddriver
+import datetime
+import pymysql
+import atexit
+import subprocess
+
+
+
+from gpiozero import CPUTemperature
+
+cpu = CPUTemperature()
+
+
+display = lcddriver.lcd()
+display.lcd_clear()
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
+
+GPIO_TRIGGER = 18
+GPIO_ECHO = 24
+
+GPIO.setup(GPIO_TRIGGER, GPIO.OUT)
+GPIO.setup(GPIO_ECHO, GPIO.IN)
+GPIO.setup(23, GPIO.OUT) 
+
+
+print("Loading known face image(s)")
+
+
+face_locations = []
+face_encodings = []
+face_names = []
+
+known_person=[]
+known_image=[]
+known_face_encoding=[]
+
+display.lcd_clear()
+display.lcd_display_string(("FACE RECOGNITION") , 1)
+display.lcd_display_string(("  PLEASE WAIT!  ") , 2)
+
+
+camera = picamera.PiCamera()
+camera.resolution = (320, 240)
+camera.framerate = 5
+camera.rotation = 180
+time.sleep(1)
+output = np.empty((240, 320, 3), dtype=np.uint8)
+
+
+# Open database connection
+db = pymysql.connect(host='localhost',
+                    user='root',
+                    password='0000',
+                    database='Timekeeping',)
+db.autocommit(True)
+
+def exit_handler():
+    display.lcd_display_string((" SHUTTING  DOWN "), 1)
+    display.lcd_display_string(("    GOOD BYE    "), 2)
+
+def distance():
+    # set Trigger to HIGH
+    GPIO.output(GPIO_TRIGGER, True)
+
+    # set Trigger after 0.01ms to LOW
+    time.sleep(0.00001)
+    GPIO.output(GPIO_TRIGGER, False)
+
+    StartTime = time.time()
+    StopTime = time.time()
+
+    # save StartTime
+    while GPIO.input(GPIO_ECHO) == 0:
+        StartTime = time.time()
+
+    # save time of arrival
+    while GPIO.input(GPIO_ECHO) == 1:
+        StopTime = time.time()
+
+    # time difference between start and arrival
+    TimeElapsed = StopTime - StartTime
+    # multiply with the sonic speed (34300 cm/s)
+    # and divide by 2, because there and back
+    distance = (TimeElapsed * 34300) / 2
+
+    return distance
+
+for file in os.listdir("IMAGE"):
+    try:
+        known_person.append(file.replace(".jpg", ""))
+        file=os.path.join("IMAGE/", file)
+        known_image = face_recognition.load_image_file(file)
+        known_face_encoding.append(face_recognition.face_encodings(known_image)[0])
+    except Exception as e:
+        pass
+
+
+display.lcd_clear()
+
+countero = 0
+err_count = 0
+while True:
+    GPIO.output(23, GPIO.LOW)
+    time.sleep(1)
+    dist = distance()
+
+    if dist < 50:
+        GPIO.output(23, GPIO.HIGH)
+        print("Scanning Face.")
+        display.lcd_display_string(("    SCANNING    "), 1)
+        display.lcd_display_string(("      FACE      "), 2)
+
+        camera.capture(output, format="rgb")
+
+        face_locations = face_recognition.face_locations(output)
+
+        print("Capturing image.")
+        display.lcd_display_string((" PLS DON'T MOVE "), 1)
+        display.lcd_display_string(("****SCANNING****"), 2)
+
+        #camera.capture(output, format="rgb")
+
+        #face_locations = face_recognition.face_locations(output)
+        print("Found {} faces in Camera.".format(len(face_locations)))
+        face_encodings = face_recognition.face_encodings(output, face_locations)
+
+        if len(face_locations) < 1:
+            display.lcd_display_string(("NO FACE DETECTED"), 1)
+            display.lcd_display_string(("----------------"), 2)
+            time.sleep(0.5)
+
+        if len(face_locations) > 1:
+            display.lcd_display_string((" MULTIPLE FACES "), 1)
+            display.lcd_display_string(("    DETECTED    "), 2)
+            time.sleep(0.5)
+
+        if cpu.temperature > 80:
+            print("Your Machine is too HOT")
+            print("Shutdown in 5 seconds...")
+            time.sleep(5)
+            display.lcd_display_string(("  DEVICE ERROR  "), 1)
+            display.lcd_display_string(("PLEASE UNPLUG ME"), 2)
+            os.system('sudo shutdown -h now')
+
+        for face_encoding in face_encodings:
+            match = face_recognition.compare_faces(known_face_encoding, face_encoding, tolerance = 0.42)
+            matches=np.where(match)[0] #Checking which image is matched
+            print(str(len(matches)) + " FACE MATCH")
+            match_count = len(matches)
+            if match_count >= 1:
+                name = str(known_person[matches[0]])
+                print(" varirable name = " + name)
+                display.lcd_clear()
+                try:
+                    now = datetime.datetime.now()
+                    nowHour = int(now.strftime("%H"))
+                    month = now.strftime("%B").lower()
+                    day_number = now.strftime("%d").lstrip("0")
+                    today12o1pm = now.replace(hour=12, minute=0, second=0, microsecond=0)
+                    cursor = db.cursor()
+                    cursor.execute(f'SELECT firstname, middlename, lastname, user_id, id FROM cfmc_employee WHERE picture1 = "pic_files/{name}.jpg" or picture2 = "pic_files/{name}.jpg" or picture3 = "pic_files/{name}.jpg" or picture4 = "pic_files/{name}.jpg" or picture5 = "pic_files/{name}.jpg"')
+                    results = cursor.fetchall()
+                    for row in results:
+                        fname = row[0]
+                        mname = row[1]
+                        lname = row[2]
+                        user_id = row[3]
+                        id = row[4]
+                    cursor.close()
+                    if not results:
+                        transaction = " FACE MATCHED!. "
+                        nome = "BUT UNREGISTERED"
+                    else:
+                        if now < today12o1pm:
+                            #LOGIN
+                            cursor = db.cursor()
+                            cursor.execute(f"SELECT * FROM cfmc_logbox WHERE employee_id = {id} AND transaction = 'I' AND DATE(date_time) = '{datetime.date.today()}'")
+                            data_login = cursor.fetchall()
+                            if not data_login:
+                            #INSERT LOGIN
+                                cursor.execute(f"INSERT INTO cfmc_logbox (date_time, transaction, employee_id) VALUES('{datetime.datetime.now()}', 'I', {id})")
+                                #db.commit()
+                                transaction = "     LOGIN      "
+                                nome = f"{fname[0]}.{mname[0]}. {lname}"
+                            else:
+                                #REPEATED LOGIN
+                                transaction = " REPEATED LOGIN "
+                                nome = f"{fname[0]}.{mname[0]}. {lname}"
+                            cursor.close()
+                            data_login *= 0
+                        elif now >= today12o1pm :
+                            #LOGOUT
+                            cursor = db.cursor()
+                            cursor.execute(f"SELECT * FROM cfmc_logbox WHERE employee_id = {id} AND transaction = 'O' AND DATE(date_time) = '{datetime.date.today()}'")
+                            data_logout = cursor.fetchall()
+                            if not data_logout:
+                                #INSERT LOGOUT
+                                cursor.execute(f"INSERT INTO cfmc_logbox (date_time, transaction, employee_id) VALUES ('{datetime.datetime.now()}', 'O', {id})")
+                                #db.commit()
+                                transaction = "     LOGOUT     "
+                                nome = f"{fname[0]}.{mname[0]}. {lname}"
+                            else:
+                                #REPEATED LOGOUT
+                                transaction = "REPEATED  LOGOUT"
+                                nome = f"{fname[0]}.{mname[0]}. {lname}"
+                            cursor.close()
+                            data_logout *= 0
+                        else:
+                            transaction = "     ERROR!     "
+                            nome = "  PLS  REPORT  "
+                    results *= 0
+                except Exception as ex:
+                    print(ex)
+                    transaction = "FACEMATCHED WITH"
+                    nome        = "ERROR PLS REPORT"
+                err_count = 0
+            elif err_count >= 3:
+                display.lcd_display_string((" PLS DON'T MOVE "), 1)
+                display.lcd_display_string("RECORDING  IMAGE", 2)
+                olo = datetime.datetime.now().strftime("%Y-%m-%d_%H%M")
+                #os.system(f"raspistill -w 320 -h 240 -q 75 -o /home/pi/Desktop/TEST/{olo}.jpg")
+                camera.capture(f"/home/pi/Desktop/Mindoro-Timekeeping/Mindoro_Timekeeping/media/validation/{olo}.jpg")
+                transaction = " IMAGE SAVED!.. "
+                nome = "PLS INFORM ADMIN"
+                time.sleep(1.5)
+                err_count = 0
+            else:
+                # name = "NO FILENAME FOUND"
+                # print("NO FACE MATCH")
+                # #time.sleep(1)
+                # #subprocess.call("logbox.sh")
+
+                # #transaction = "   NO RECORD!   "
+                # #nome = " IMAGE RECORDED "
+                # camera.close()
+                # # os.system("/home/pi/Desktop/TEST/logbox.sh")
+                # olo = datetime.datetime.now().strftime("%Y-%m-%d_%H%M")
+                # os.system(f"raspistill -w 320 -h 240 -q 75 -o /home/pi/Desktop/TEST/{olo}.jpg")
+                # temp_image = face_recognition.load_image_file(f"/home/pi/Desktop/TEST/{olo}.jpg")
+                # face_locations = face_recognition.face_locations(temp_image)
+                # face_encodings = face_recognition.face_encodings(temp_image, face_locations)
+                # print(len(face_encodings))
+
+                # camera = picamera.PiCamera()
+                # camera.resolution = (320, 240)
+                # camera.framerate = 5
+                # time.sleep(1)
+                # output = np.empty((240, 320, 3), dtype=np.uint8)
+
+                # # transaction = "   NO RECORD!   "
+                # # nome = " IMAGE RECORDED "
+                transaction = "PLS TRY AGAIN!.."
+                nome = "FACE THE CAMERA."
+                err_count += 1
+
+                display.lcd_clear()
+            display.lcd_display_string((transaction), 1)
+            display.lcd_display_string(nome, 2)
+            print(transaction)
+            print(nome)
+            name = ""
+            time.sleep(2)
+    else:
+        if countero >= 30:
+            print(" ")
+            print("Waiting Face")
+            print("Distance =" , dist , "       CPU Temp =" , cpu.temperature)
+            countero = 0
+
+        countero += 1
+
+        display.lcd_display_string(str(datetime.datetime.now().strftime("%b %d, %Y %A") ), 1)
+        display.lcd_display_string(str(datetime.datetime.now().strftime("  " + "%I:%M:%S " + " " + "%p  ") ) , 2)
+
+        if cpu.temperature > 70:
+            print("Your Machine is too HOT")
+            print("Shutdown in 5 seconds...")
+            time.sleep(5)
+            display.lcd_display_string(("  DEVICE ERROR  "), 1)
+            display.lcd_display_string(("PLEASE UNPLUG ME"), 2)
+            os.system('sudo shutdown -h now')
+
+#        atexit.register(exit_handler)
