@@ -1,0 +1,77 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static admin_modify %}
+
+{% block extrahead %}{{ block.super }}
+<script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
+{{ media }}
+{% endblock %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}">{% endblock %}
+
+{% block coltype %}colM{% endblock %}
+
+{% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} change-form{% endblock %}
+
+{% if not is_popup %}
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+    &rsaquo; <a href="{{STATIC_URL}}/admin/schedule/" >Schedule</a>
+    &rsaquo; Validation
+    {% comment %} <a href="javascript:history.back()" style="float: right">Back</a> {% endcomment %}
+</div>
+{% endblock %}
+{% endif %}
+
+{% block content %}
+<div id="content-main">
+    <br>
+    <br>
+    <br>
+    {% block object-tools %}
+    <ul class="object-tools">
+        {% block object-tools-items %}
+        <li>
+            <a href="{% url 'validation_clear' %}" class="historylink" style="background-color: #e74638;">Clear All Validations</a>
+        </li>
+        {% endblock %}
+    </ul>
+{% endblock %}
+<style>
+        div.gallery {
+        margin: 5px;
+        border: 1px solid #ccc;
+        float: left;
+        width: 180px;
+        }
+        
+        div.gallery:hover {
+        border: 1px solid #777;
+        }
+        
+        div.gallery img {
+        width: 100%;
+        height: auto;
+        }
+        
+        div.desc {
+        padding: 15px;
+        text-align: center;
+        }
+    </style>
+
+    {% for image in images %}
+    <div class="gallery">
+        <a href="{{STATIC_URL}}/cfmc/logbox/add">
+        <img src="{{STATIC_URL}}/media/validation/{{image}}" alt="" width="600" height="400">
+        </a>
+        <div class="desc">{{image|slice:":-4"}}</div>
+    </div>
+    {% endfor %}
+</div>
+    <script>
+        window.onload = function() {
+            document.getElementsByTagName("TITLE")[0].innerHTML = "VALIDATION | TIMEKEEPING";
+        }
+    </script>
+{% endblock %}

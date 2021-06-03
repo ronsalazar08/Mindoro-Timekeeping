@@ -54,6 +54,12 @@ class Las3Week(models.Model):
         app_label = 'schedule'
 
 
+class Validation(models.Model):
+    class Meta:
+        verbose_name_plural = '5. ' + 'Validations'
+        app_label = 'schedule'
+
+
 class CurWeekModelAdmin(admin.ModelAdmin):
     model = CurWeek
 
@@ -98,7 +104,19 @@ class Las3WeekModelAdmin(admin.ModelAdmin):
         ]
 
 
+class ValidationModelAdmin(admin.ModelAdmin):
+    model = Validation
+
+    def get_urls(self):
+        view_name = '{}_{}_changelist'.format(
+            self.model._meta.app_label, self.model._meta.model_name)
+        return [
+            path('', views.validation_view, name=view_name),
+        ]
+
+
 admin.site.register(CurWeek, CurWeekModelAdmin)
 admin.site.register(LasWeek, LasWeekModelAdmin)
 admin.site.register(Las2Week, Las2WeekModelAdmin)
 admin.site.register(Las3Week, Las3WeekModelAdmin)
+admin.site.register(Validation, ValidationModelAdmin)

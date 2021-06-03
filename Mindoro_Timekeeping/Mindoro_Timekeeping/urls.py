@@ -6,7 +6,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 # from . import views
 
-# admin.site.site_header = "ADMINISTRATOR PAGE"
+admin.site.site_header = "ADMINISTRATOR PAGE"
 admin.site.site_title = "TIMEKEEPING"
 admin.site.index_title = "TIMEKEEPING"
 
